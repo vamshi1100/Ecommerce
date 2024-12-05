@@ -1,7 +1,10 @@
+import { ProductCartModel } from "../model/productmodel.js";
+
 export class UnifiedFilter {
   constructor(viewInstance) {
     this.view = viewInstance;
     this.data = [];
+    this.productCartModelObj = new ProductCartModel();
   }
 
   fetchData(url) {
@@ -14,17 +17,52 @@ export class UnifiedFilter {
       .catch((error) => console.error("Error:", error));
   }
 
-  initializeFilters() {
-    const setupFilter = (buttonId, filterLogic) => {
-      document.getElementById(buttonId).addEventListener("click", () => {
-        const filteredData = this.data.filter(filterLogic);
-        this.view.displayData(filteredData);
-      });
-    };
+  initializeRateFilter() {
+    const rateFilter = document.getElementById("rateFilter");
+    rateFilter.addEventListener("change", () => {
+      const selectedOption = rateFilter.value;
+      let filteredData;
 
-    setupFilter("filterg50", (item) => item.price > 50);
-    setupFilter("filterl50", (item) => item.price < 1000);
-    setupFilter("filterbtw", (item) => item.price > 50 && item.price < 1000);
+      switch (selectedOption) {
+        case "g50":
+          filteredData = this.data.filter((item) => item.price > 50);
+          break;
+        case "l100":
+          filteredData = this.data.filter((item) => item.price < 100);
+          break;
+        case "btw50_500":
+          filteredData = this.data.filter(
+            (item) => item.price > 50 && item.price < 500
+          );
+          break;
+        default:
+          filteredData = this.data;
+      }
+
+      this.view.displayData(filteredData);
+    });
+  }
+
+  initializePopularityFilter() {
+    const popularityFilter = document.getElementById("popularityFilter");
+    popularityFilter.addEventListener("change", () => {
+      const selectedOption = popularityFilter.value;
+      let sortedData;
+
+      if (selectedOption === "mostpopular") {
+        sortedData = [...this.data].sort(
+          (a, b) => b.rating.count - a.rating.count
+        );
+      } else if (selectedOption === "lesspopular") {
+        sortedData = [...this.data].sort(
+          (a, b) => a.rating.count - b.rating.count
+        );
+      } else {
+        sortedData = this.data;
+      }
+
+      this.view.displayData(sortedData);
+    });
   }
 
   initializeSearch() {
@@ -39,30 +77,31 @@ export class UnifiedFilter {
     });
   }
 
-  initializePopularityFilters() {
-    const setupFilter = (buttonId, sortOrder) => {
-      const button = document.getElementById(buttonId);
-      if (button) {
-        button.addEventListener("click", () => {
-          let sortedData;
-          if (sortOrder === "most") {
-            sortedData = this.data.sort(
-              (a, b) => b.rating.count - a.rating.count
-            );
-          } else if (sortOrder === "less") {
-            sortedData = this.data.sort(
-              (a, b) => a.rating.count - b.rating.count
-            );
-          }
+  initializeFilters() {
+    this.initializeRateFilter();
+    this.initializePopularityFilter();
+  }
 
-          this.view.displayData(sortedData);
-        });
-      } else {
-        console.error(`Button with ID "${buttonId}" not found.`);
-      }
-    };
+  addToLocalStorage(product) {
+    this.productCartModelObj.data = product;
+    console.log("Product added to local storage:", product);
+    this.count();
+  }
 
-    setupFilter("mostpopular", "most");
-    setupFilter("lesspopular", "less");
+  addtocart = (elem) => {
+    this.addToLocalStorage(elem);
+    alert(`${elem.title} has been added to your cart!`);
+  };
+
+  count() {
+    let cartcount = document.getElementById("cartcount");
+    let elems = this.productCartModelObj.data;
+    let countnos = 0;
+
+    elems.forEach(() => {
+      countnos++;
+    });
+
+    cartcount.innerText = `Go To Cart (${countnos})`;
   }
 }

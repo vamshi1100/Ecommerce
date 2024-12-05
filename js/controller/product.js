@@ -1,14 +1,16 @@
 import { productview } from "../view/productview.js";
 import { ProductCartModel } from "../model/productmodel.js";
 export class productcontroller {
-  constructor() {}
-  fetchproductdata() {
+  constructor() {
+    this.ProductCartModel = new ProductCartModel();
+  }
+  async fetchproductdata() {
     let productviewobj = new productview();
     const currentUrl = window.location.href;
     const url = new URL(currentUrl);
     const productId = new URLSearchParams(url.search).get("id");
     if (productId) {
-      fetch(`https://fakestoreapi.com/products/${productId}`)
+      await fetch(`https://fakestoreapi.com/products/${productId}`)
         .then((resp) => resp.json())
         .then((data) => {
           productviewobj.displayproduct(data);
@@ -21,10 +23,11 @@ export class productcontroller {
     }
   }
 
-  saveproductdata(title, image) {
+  /**************/
+  saveproductdata(title, image, price) {
     let productCartModelObj = new ProductCartModel();
     console.log(productCartModelObj.data);
-    let data = { title: title, image: image };
+    let data = { title: title, image: image, price: price };
     productCartModelObj.data = data;
   }
 
@@ -33,12 +36,24 @@ export class productcontroller {
     let productCartModelObj = new ProductCartModel();
     productviewobj.displaycartproduct(productCartModelObj.data);
   }
+
+  /**************/
+  cartamount() {
+    let carttotal = document.getElementById("carttotal");
+    let sum = 0;
+    this.ProductCartModel.data.forEach((element) => {
+      sum = sum + element.price;
+    });
+    carttotal.innerText = `Total : ${sum}`;
+    console.log(sum);
+  }
 }
 
 const currentUrl = window.location.href;
 const url = new URL(currentUrl);
 const productId = new URLSearchParams(url.search).get("id");
 let productcontrollerobj = new productcontroller();
+productcontrollerobj.cartamount();
 if (productId) {
   productcontrollerobj.fetchproductdata();
 } else {

@@ -7,15 +7,11 @@
     <link rel="stylesheet" href="../css/index.css"" />
   </head>
   <body>
-    
-<div class="heading">      
-       <h1>Products</h1> 
-   </div>
     <div id="maincontainer">
-      
-      <div id="sub1"> 
-      </div>  
       <div id="sub2">
+        <div class="heading">
+          <h1>Products</h1>
+        </div>
         <div id="search" class="filters">
           <h1>search</h1>
           <input
@@ -24,24 +20,38 @@
             placeholder="enter something to search" />
         </div>
         <div id="filterbyrate" class="filters">
-          <h1>Filter by rate</h1>
-          <button id="filterg50">>50</button>
-          <button id="filterl50"><100</button>
-          <button id="filterbtw"> >50 & <500</50></button>
+          <h1>Filter by Rate</h1>
+          <select id="rateFilter">
+            <option id="defaultRate" value="" disabled selected>
+              Select Rate
+            </option>
+            <option id="filterg50" value="g50">Greater than 50</option>
+            <option id="filterl100" value="l100">Less than 100</option>
+            <option id="filterbtw50_500" value="btw50_500">
+              Between 50 and 500
+            </option>
+          </select>
         </div>
+
         <div id="filterbypopularity" class="filters">
-          <h1>FilterByPopularity</h1>
-          <button id="mostpopular">most popular</button>
-          <button id="lesspopular">less popular</button>
-
-
+          <h1>Filter by Popularity</h1>
+          <select id="popularityFilter">
+            <option id="defaultPopularity" value="" disabled selected>
+              Select Popularity
+            </option>
+            <option id="mostpopular" value="mostpopular">Most Popular</option>
+            <option id="lesspopular" value="lesspopular">Less Popular</option>
+          </select>
         </div>
+
         <div class="cart">
-          <a href="../html/cart.html"><button>GO TO CART</button></a>
+          <a href="../html/cart.html">
+            <button id="cartcount"></button>
+          </a>
         </div>
-
       </div>
 
+      <div id="sub1"></div>
     </div>
 
     <script type="module" src="../js/main.js"></script>

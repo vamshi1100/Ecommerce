@@ -1,8 +1,26 @@
+import { UnifiedFilter } from "../controller/Filter.js";
+import { ProductCartModel } from "../model/productmodel.js";
+
 export class view {
-  constructor() {}
+  constructor() {
+    this.UnifiedFilter = new UnifiedFilter();
+    this.ProductCartModel = new ProductCartModel();
+    this.cartCountButton = document.getElementById("cartcount");
+  }
+
   displayData(data) {
     let container = document.getElementById("sub1");
     container.innerHTML = "";
+
+    let items = this.ProductCartModel.data;
+    const itemCount = {};
+    items.forEach((item) => {
+      if (itemCount[item.id]) {
+        itemCount[item.id]++;
+      } else {
+        itemCount[item.id] = 1;
+      }
+    });
 
     data.slice(0, 10).forEach((elem) => {
       const item = document.createElement("div");
@@ -15,6 +33,7 @@ export class view {
       const titleDiv = document.createElement("div");
       titleDiv.id = "title";
       titleDiv.textContent = `title: ${elem.title}`;
+
       const imgDiv = document.createElement("div");
       imgDiv.id = "img";
 
@@ -23,12 +42,9 @@ export class view {
       img.alt = elem.title;
       img.style.maxWidth = "200px";
 
-      let a = document.createElement("a");
+      const a = document.createElement("a");
       a.href = `product.html?id=${elem.id}`;
-
       a.appendChild(img);
-
-      // Append the anchor to the imgDiv
       imgDiv.appendChild(a);
 
       const priceDiv = document.createElement("div");
@@ -39,9 +55,31 @@ export class view {
       ratingDiv.id = "rating";
       ratingDiv.textContent = `rating: ${elem.rating.rate} count: ${elem.rating.count}`;
 
-      item.append(idDiv, titleDiv, imgDiv, priceDiv, ratingDiv);
+      const buttonDiv = document.createElement("div");
+      const btn = document.createElement("button");
+      btn.id = "cartbtn";
 
+      const individualCount = itemCount[elem.id] || 0;
+      btn.textContent = `Add to Cart : ${individualCount}`;
+
+      buttonDiv.appendChild(btn);
+
+      btn.addEventListener("click", () => {
+        this.UnifiedFilter.addtocart(elem);
+        itemCount[elem.id] = (itemCount[elem.id] || 0) + 1;
+        btn.textContent = `Add to Cart : ${itemCount[elem.id]}`;
+        this.updateCartButton();
+      });
+
+      item.append(idDiv, titleDiv, imgDiv, priceDiv, ratingDiv, buttonDiv);
       container.appendChild(item);
     });
+
+    this.updateCartButton();
+  }
+
+  updateCartButton() {
+    const totalItems = this.ProductCartModel.data.length;
+    this.cartCountButton.textContent = `Go To Cart (${totalItems})`;
   }
 }

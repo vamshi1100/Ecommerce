@@ -10,7 +10,7 @@ async function call() {
 
     unifiedFilter.initializeFilters();
     unifiedFilter.initializeSearch();
-    unifiedFilter.initializePopularityFilters();
+    unifiedFilter.initializePopularityFilter();
   } catch (error) {
     console.error("Error during filter setup:", error);
   }

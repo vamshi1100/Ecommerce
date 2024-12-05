@@ -43,7 +43,7 @@ export class productview {
     let pobj = new productcontroller();
     cartbtn.addEventListener("click", () => {
       console.log(`Product added to cart: ${data.id}`);
-      pobj.saveproductdata(data.title, data.image);
+      pobj.saveproductdata(data.title, data.image, data.price);
     });
 
     let priceElem = document.getElementById("price");
@@ -68,13 +68,19 @@ export class productview {
   }
 
   displaycartproduct(data) {
-    console.log(data);
+    // console.log(data);
 
     data.forEach((item) => {
       let titleElem = document.getElementById("title1");
       let titleh1 = document.createElement("h1");
       titleh1.innerText = `Title: ${item.title}`;
       titleElem.appendChild(titleh1);
+
+      /**************/
+      let priceElem = document.getElementById("price");
+      let priceh1 = document.createElement("h1");
+      priceh1.innerText = `price: ${item.price}`;
+      priceElem.appendChild(priceh1);
 
       let imageElem = document.getElementById("image2");
       const img = document.createElement("img");
@@ -83,10 +89,14 @@ export class productview {
       img.style.maxWidth = "200px";
       imageElem.appendChild(img);
 
+      let div = document.createElement("div");
       let itemContainer = document.getElementById("item");
       let itemDiv = document.createElement("div");
       itemDiv.appendChild(img);
       itemDiv.appendChild(titleh1);
+      itemDiv.appendChild(priceh1);
+      div.appendChild(itemDiv);
+      itemDiv.id = "itemdiv";
       itemContainer.appendChild(itemDiv);
     });
   }
