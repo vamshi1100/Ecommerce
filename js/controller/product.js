@@ -44,8 +44,12 @@ export class productcontroller {
     this.ProductCartModel.data.forEach((element) => {
       sum = sum + element.price;
     });
-    carttotal.innerText = `Total : ${sum}`;
-    console.log(sum);
+    try {
+      carttotal.innerText = `Total : ${sum}`;
+      console.log(sum);
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
 
